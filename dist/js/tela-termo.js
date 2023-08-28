@@ -1,14 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.TelaTermo = void 0;
-const verificacao_letra_enum_js = require("./verificacao-letra-enum.js");
-const termo_js = require("./termo.js");
-class TelaTermo {
+import { VerificacaoDaLetraEnum } from "./verificacao-letra-enum.js";
+import { Termo } from "./termo.js";
+export class TelaTermo {
     get linhaAtual() { return this.divLinhas[this.jogo.tentativas]; }
     constructor() {
         this.indiceColunaAtual = -1;
         this.divLinhas = [];
-        this.jogo = new termo_js.Termo();
+        this.jogo = new Termo();
         this.jogos = new Array();
         this.btnEnter = document.getElementById("btnEnter");
         this.pnlTeclado = document.getElementById("pnlTeclado");
@@ -36,11 +33,11 @@ class TelaTermo {
         this.btnBackspace.addEventListener("click", this.removerLetra.bind(this));
     }
     reiniciarJogo() {
-        this.jogo = new termo_js.Termo();
+        this.jogo = new Termo();
         for (const linha of this.divLinhas) {
-            for (const coluna of linha.children) {
-                coluna.textContent = "";
-                coluna.classList.remove("letra-correta", "letra-posicao-errada", "letra-nao-existe");
+            for (const letra of linha.children) {
+                letra.textContent = "";
+                letra.classList.remove("letra-correta", "letra-posicao-errada", "letra-nao-existe");
             }
         }
         for (const botao of this.pnlTeclado.children) {
@@ -52,9 +49,9 @@ class TelaTermo {
     }
     removerLetra() {
         if (this.indiceColunaAtual >= 0) {
-            const coluna = this.linhaAtual.children[this.indiceColunaAtual];
-            if (coluna) {
-                coluna.textContent = "";
+            const letra = this.linhaAtual.children[this.indiceColunaAtual];
+            if (letra) {
+                letra.textContent = "";
                 this.indiceColunaAtual--;
             }
         }
@@ -98,13 +95,13 @@ class TelaTermo {
         for (let indiceColuna = 0; indiceColuna < avaliacoes.length; indiceColuna++) {
             const colunaSelecionada = this.divLinhas[indiceLinha].children[indiceColuna];
             switch (avaliacoes[indiceColuna]) {
-                case verificacao_letra_enum_js.VerificacaoDaLetraEnum.Correta:
+                case VerificacaoDaLetraEnum.Correta:
                     colunaSelecionada.classList.add("letra-correta");
                     break;
-                case verificacao_letra_enum_js.VerificacaoDaLetraEnum.PosicaoErrada:
+                case VerificacaoDaLetraEnum.PosicaoErrada:
                     colunaSelecionada.classList.add("letra-posicao-errada");
                     break;
-                case verificacao_letra_enum_js.VerificacaoDaLetraEnum.NaoExiste:
+                case VerificacaoDaLetraEnum.NaoExiste:
                     colunaSelecionada.classList.add("letra-nao-existe");
                     break;
             }
@@ -118,10 +115,10 @@ class TelaTermo {
         this.indiceColunaAtual++;
         const coluna = this.linhaAtual.children[this.indiceColunaAtual];
         coluna.textContent = letra;
+        console.log("Button clicked!");
     }
     setMessageLabelClass(className) {
         this.lblMensagemFinal.classList.add(className);
     }
 }
-exports.TelaTermo = TelaTermo;
 //# sourceMappingURL=tela-termo.js.map

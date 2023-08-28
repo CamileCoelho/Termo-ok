@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Termo = void 0;
-const verificacao_letra_enum_js = require("./verificacao-letra-enum.js");
+import { VerificacaoDaLetraEnum } from "./verificacao-letra-enum.js";
 const palavras = [
     "acido", "adiar", "impar", "algar", "amado", "amigo", "anexo", "anuir", "aonde", "apelo",
     "aquem", "argil", "arroz", "assar", "atras", "avido", "azeri", "babar", "bagre", "banho",
@@ -42,7 +39,7 @@ const palavras = [
     "igual", "ileso", "imune", "irado", "isola", "jarra", "jaula", "jegue", "jeito", "jogar",
     "jovem", "juiza", "juizo", "julho", "junho", "jurar", "justa"
 ];
-class Termo {
+export class Termo {
     constructor() {
         this.palavraSecreta = "";
         this.tentativas = 0;
@@ -56,16 +53,16 @@ class Termo {
         const avaliacoes = new Array(palavra.length);
         for (let i = 0; i < palavra.length; i++) {
             if (palavra[i] === this.palavraSecreta[i]) {
-                avaliacoes[i] = verificacao_letra_enum_js.VerificacaoDaLetraEnum.Correta;
+                avaliacoes[i] = VerificacaoDaLetraEnum.Correta;
             }
             else if (this.palavraSecreta.includes(palavra[i])) {
-                avaliacoes[i] = verificacao_letra_enum_js.VerificacaoDaLetraEnum.PosicaoErrada;
+                avaliacoes[i] = VerificacaoDaLetraEnum.PosicaoErrada;
             }
             else {
-                avaliacoes[i] = verificacao_letra_enum_js.VerificacaoDaLetraEnum.NaoExiste;
+                avaliacoes[i] = VerificacaoDaLetraEnum.NaoExiste;
             }
         }
-        if (avaliacoes.every((a) => a === verificacao_letra_enum_js.VerificacaoDaLetraEnum.Correta)) {
+        if (avaliacoes.every((a) => a === VerificacaoDaLetraEnum.Correta)) {
             this.mensagemFinal = `Você acertou a palavra ${this.palavraSecreta}, parabéns!`;
         }
         else if (this.jogadorPerdeu()) {
@@ -84,5 +81,4 @@ class Termo {
         return palavras[indiceAleatorio].toUpperCase();
     }
 }
-exports.Termo = Termo;
 //# sourceMappingURL=termo.js.map

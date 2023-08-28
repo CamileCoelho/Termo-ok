@@ -189,6 +189,8 @@ export class TelaTermo {
     const coluna = this.linhaAtual.children[this.indiceColunaAtual] as HTMLDivElement;
     
     coluna.textContent = letra;
+    
+    console.log("Button clicked!");
   }
 
   private setMessageLabelClass(className: string): void 
