@@ -81,7 +81,7 @@ export class Termo {
     } 
     else if (this.jogadorPerdeu()) 
     {
-      this.mensagemFinal = `Você perdeu! A palavra era ${this.palavraSecreta} :-( tente novamente...`;
+      this.mensagemFinal = `Você perdeu! A palavra era ${this.palavraSecreta}. Tente novamente...`;
     }
 
     return avaliacoes;
