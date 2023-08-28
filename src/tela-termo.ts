@@ -49,7 +49,7 @@ export class TelaTermo {
       botao.addEventListener("click", this.inserirLetra.bind(this));
     }
 
-    this.btnEnter.addEventListener("click", this.vrificarPalavra.bind(this));
+    this.btnEnter.addEventListener("click", this.verificarPalavra.bind(this));
 
     this.btnReiniciar.addEventListener("click", this.reiniciarJogo.bind(this));
 
@@ -69,7 +69,7 @@ export class TelaTermo {
       }
     }
 
-    for (const botao of this.pnlTeclado.children) 
+    for (const botao of this.pnlConteudo.children) 
     {
       (botao as HTMLButtonElement).disabled = false;
     }
@@ -93,7 +93,7 @@ export class TelaTermo {
     }
   }
 
-  public vrificarPalavra(): void 
+  public verificarPalavra(): void 
   {
     const linha = this.jogo.tentativas;
     const palavraCompleta = this.receberPalavra();
@@ -121,7 +121,7 @@ export class TelaTermo {
     {
       this.lblMensagemFinal.textContent = this.jogo.mensagemFinal;
       
-      for (const botao of this.pnlTeclado.children) 
+      for (const botao of this.pnlConteudo.children) 
       {
         if (botao.id === "btnReiniciar")
         {
@@ -183,14 +183,17 @@ export class TelaTermo {
     }
     
     const letra = (event.target as HTMLButtonElement).textContent;
+
+    if(letra != null){
+      if (letra.length === 1) 
+      {
+        this.indiceColunaAtual++;
     
-    this.indiceColunaAtual++;
+        const coluna = this.linhaAtual.children[this.indiceColunaAtual] as HTMLDivElement;
     
-    const coluna = this.linhaAtual.children[this.indiceColunaAtual] as HTMLDivElement;
-    
-    coluna.textContent = letra;
-    
-    console.log("Button clicked!");
+        coluna.textContent = letra;
+      }
+    }
   }
 
   private setMessageLabelClass(className: string): void 

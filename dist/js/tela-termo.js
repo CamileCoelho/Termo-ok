@@ -28,7 +28,7 @@ export class TelaTermo {
             }
             botao.addEventListener("click", this.inserirLetra.bind(this));
         }
-        this.btnEnter.addEventListener("click", this.vrificarPalavra.bind(this));
+        this.btnEnter.addEventListener("click", this.verificarPalavra.bind(this));
         this.btnReiniciar.addEventListener("click", this.reiniciarJogo.bind(this));
         this.btnBackspace.addEventListener("click", this.removerLetra.bind(this));
     }
@@ -40,7 +40,7 @@ export class TelaTermo {
                 letra.classList.remove("letra-correta", "letra-posicao-errada", "letra-nao-existe");
             }
         }
-        for (const botao of this.pnlTeclado.children) {
+        for (const botao of this.pnlConteudo.children) {
             botao.disabled = false;
         }
         this.lblMensagemFinal.textContent = "";
@@ -56,7 +56,7 @@ export class TelaTermo {
             }
         }
     }
-    vrificarPalavra() {
+    verificarPalavra() {
         const linha = this.jogo.tentativas;
         const palavraCompleta = this.receberPalavra();
         const avaliacoes = this.jogo.avaliar(palavraCompleta);
@@ -74,7 +74,7 @@ export class TelaTermo {
         }
         if (jogadorAcertou || jogadorPerdeu) {
             this.lblMensagemFinal.textContent = this.jogo.mensagemFinal;
-            for (const botao of this.pnlTeclado.children) {
+            for (const botao of this.pnlConteudo.children) {
                 if (botao.id === "btnReiniciar") {
                     continue;
                 }
@@ -112,10 +112,13 @@ export class TelaTermo {
             return;
         }
         const letra = event.target.textContent;
-        this.indiceColunaAtual++;
-        const coluna = this.linhaAtual.children[this.indiceColunaAtual];
-        coluna.textContent = letra;
-        console.log("Button clicked!");
+        if (letra != null) {
+            if (letra.length === 1) {
+                this.indiceColunaAtual++;
+                const coluna = this.linhaAtual.children[this.indiceColunaAtual];
+                coluna.textContent = letra;
+            }
+        }
     }
     setMessageLabelClass(className) {
         this.lblMensagemFinal.classList.add(className);
