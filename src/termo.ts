@@ -41,7 +41,7 @@ const palavras: string[] = [
   "jovem", "juiza", "juizo", "julho", "junho", "jurar", "justa" ];
 
 export class Termo {
-  palavraSecreta: string;
+  palavraSecreta: string = "";
   tentativas: number = 0;
   mensagemFinal: string = "";
 

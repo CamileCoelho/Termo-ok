@@ -1,146 +1,126 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TelaTermo = void 0;
-const avaliacao_letra_enum_js_1 = require("./avaliacao-letra.enum.js");
-const termo_js_1 = require("./termo.js");
+const verificacao_letra_enum_js = require("./verificacao-letra-enum.js");
+const termo_js = require("./termo.js");
 class TelaTermo {
+    get linhaAtual() { return this.divLinhas[this.jogo.tentativas]; }
     constructor() {
-        this.divLinhasTermo = [];
-        this.indiceColunaSelecionada = -1;
-        this.jogo = new termo_js_1.Termo();
-        this.termo = [this.jogo];
-        const htmlComponents = this.getHTMLComponents();
-        this.registerEvents(htmlComponents);
-        this.hideMessageDiv();
+        this.indiceColunaAtual = -1;
+        this.divLinhas = [];
+        this.jogo = new termo_js.Termo();
+        this.jogos = new Array();
+        this.btnEnter = document.getElementById("btnEnter");
+        this.pnlTeclado = document.getElementById("pnlTeclado");
+        this.pnlConteudo = document.getElementById("pnlConteudo");
+        this.btnReiniciar = document.getElementById("btnReiniciar");
+        this.btnBackspace = document.getElementById("btnBackspace");
+        this.divMensagemFinal = document.getElementById("divMensagemFinal");
+        this.lblMensagemFinal = document.getElementById("lblMensagemFinal");
+        this.jogos.push(this.jogo);
+        document.querySelectorAll(".linha").forEach(div => {
+            this.divLinhas.push(div);
+        });
+        this.registrarEventos();
+        this.divMensagemFinal.classList.add("display-none");
     }
-    getHTMLComponents() {
-        return {
-            pnlTeclado: document.getElementById("pnlTeclado"),
-            btnEnter: document.getElementById("btnEnter"),
-            btnReiniciar: document.getElementById("btnReiniciar"),
-            btnApagar: document.getElementById("btnApagar"),
-            divMensagemFinal: document.getElementById("divMensagemFinal"),
-            lblMensagemFinal: document.getElementById("lblMensagemFinal"),
-        };
-    }
-    registerEvents(htmlComponents) {
-        htmlComponents.btnEnter.addEventListener("click", this.avaliarPalavra.bind(this));
-        htmlComponents.btnReiniciar.addEventListener("click", this.reiniciarJogo.bind(this));
-        htmlComponents.btnApagar.addEventListener("click", this.apagarLetra.bind(this));
-        for (const botao of htmlComponents.pnlTeclado.children) {
-            if (botao.textContent === "Enter" || botao.textContent === "Reiniciar" || botao.textContent === "<")
+    registrarEventos() {
+        for (const botao of this.pnlConteudo.children) {
+            if (botao.id === "btnEnter" || botao.id === "btnReiniciar" || botao.id === "btnBackspace") {
                 continue;
-            botao.addEventListener("click", this.digitarLetra.bind(this));
+            }
+            botao.addEventListener("click", this.inserirLetra.bind(this));
         }
-    }
-    hideMessageDiv() {
-        this.getMessageDiv().classList.add("display-none");
-    }
-    getMessageDiv() {
-        return document.getElementById("divMensagemFinal");
+        this.btnEnter.addEventListener("click", this.vrificarPalavra.bind(this));
+        this.btnReiniciar.addEventListener("click", this.reiniciarJogo.bind(this));
+        this.btnBackspace.addEventListener("click", this.removerLetra.bind(this));
     }
     reiniciarJogo() {
-        this.jogo = new termo_js_1.Termo();
-        for (const linha of this.divLinhasTermo) {
+        this.jogo = new termo_js.Termo();
+        for (const linha of this.divLinhas) {
             for (const coluna of linha.children) {
                 coluna.textContent = "";
-                coluna.classList.remove("letra-correta", "letra-posicao-incorreta", "letra-nao-existente");
+                coluna.classList.remove("letra-correta", "letra-posicao-errada", "letra-nao-existe");
             }
         }
-        this.enableKeyboardButtons();
-        // this.lblMensagemFinal.textContent = '';
-        this.hideMessageDiv();
-        this.indiceColunaSelecionada = -1;
+        for (const botao of this.pnlTeclado.children) {
+            botao.disabled = false;
+        }
+        this.lblMensagemFinal.textContent = "";
+        this.divMensagemFinal.classList.add("display-none");
+        this.indiceColunaAtual = -1;
     }
-    apagarLetra() {
-        if (this.indiceColunaSelecionada >= 0) {
-            const coluna = this.getCurrentLine().children[this.indiceColunaSelecionada];
+    removerLetra() {
+        if (this.indiceColunaAtual >= 0) {
+            const coluna = this.linhaAtual.children[this.indiceColunaAtual];
             if (coluna) {
                 coluna.textContent = "";
-                this.indiceColunaSelecionada--;
+                this.indiceColunaAtual--;
             }
         }
     }
-    avaliarPalavra() {
+    vrificarPalavra() {
         const linha = this.jogo.tentativas;
-        const palavraCompleta = this.obterPalavra();
+        const palavraCompleta = this.receberPalavra();
         const avaliacoes = this.jogo.avaliar(palavraCompleta);
         if (avaliacoes === null) {
             return;
         }
         const jogadorAcertou = this.jogo.jogadorAcertou(palavraCompleta);
         const jogadorPerdeu = this.jogo.jogadorPerdeu();
-        this.colorirColunas(linha, avaliacoes);
+        this.pintarColunas(linha, avaliacoes);
         if (jogadorPerdeu) {
             this.setMessageLabelClass("cor-erro");
         }
         else {
-            this.setMessageLabelClass("cor-acertou");
+            this.setMessageLabelClass("cor-acerto");
         }
         if (jogadorAcertou || jogadorPerdeu) {
-            //  this.lblMensagemFinal.textContent = this.jogo.mensagemFinal;
-            this.disableKeyboardButtons();
-            this.showMessageDiv();
+            this.lblMensagemFinal.textContent = this.jogo.mensagemFinal;
+            for (const botao of this.pnlTeclado.children) {
+                if (botao.id === "btnReiniciar") {
+                    continue;
+                }
+                botao.disabled = true;
+            }
+            this.divMensagemFinal.classList.remove("display-none");
         }
-        this.indiceColunaSelecionada = -1;
+        this.indiceColunaAtual = -1;
     }
-    getCurrentLine() {
-        return this.divLinhasTermo[this.jogo.tentativas];
-    }
-    obterPalavra() {
-        let palavra = '';
+    receberPalavra() {
+        let palavra = "";
         for (let coluna = 0; coluna < 5; coluna++) {
-            palavra += this.getCurrentLine().children[coluna].innerText;
+            palavra += this.linhaAtual.children[coluna].innerText;
         }
         return palavra;
     }
-    colorirColunas(indiceLinha, avaliacoes) {
-        const linha = this.divLinhasTermo[indiceLinha];
+    pintarColunas(indiceLinha, avaliacoes) {
         for (let indiceColuna = 0; indiceColuna < avaliacoes.length; indiceColuna++) {
-            const colunaSelecionada = linha.children[indiceColuna];
+            const colunaSelecionada = this.divLinhas[indiceLinha].children[indiceColuna];
             switch (avaliacoes[indiceColuna]) {
-                case avaliacao_letra_enum_js_1.AvaliacaoLetraEnum.Correta:
+                case verificacao_letra_enum_js.VerificacaoDaLetraEnum.Correta:
                     colunaSelecionada.classList.add("letra-correta");
                     break;
-                case avaliacao_letra_enum_js_1.AvaliacaoLetraEnum.PosicaoIncorreta:
-                    colunaSelecionada.classList.add("letra-posicao-incorreta");
+                case verificacao_letra_enum_js.VerificacaoDaLetraEnum.PosicaoErrada:
+                    colunaSelecionada.classList.add("letra-posicao-errada");
                     break;
-                case avaliacao_letra_enum_js_1.AvaliacaoLetraEnum.NaoExistente:
-                    colunaSelecionada.classList.add("letra-nao-existente");
+                case verificacao_letra_enum_js.VerificacaoDaLetraEnum.NaoExiste:
+                    colunaSelecionada.classList.add("letra-nao-existe");
                     break;
             }
         }
     }
-    setMessageLabelClass(className) {
-        // this.lblMensagemFinal.classList.add(className);
-    }
-    disableKeyboardButtons() {
-        for (const botao of this.getHTMLComponents().pnlTeclado.children) {
-            if (botao.textContent === "Reiniciar") {
-                continue;
-            }
-            botao.disabled = true;
-        }
-    }
-    enableKeyboardButtons() {
-        for (const botao of this.getHTMLComponents().pnlTeclado.children) {
-            if (botao.textContent === "Reiniciar") {
-                continue;
-            }
-            botao.disabled = false;
-        }
-    }
-    showMessageDiv() {
-        this.getMessageDiv().classList.remove("display-none");
-    }
-    digitarLetra(event) {
-        if (this.indiceColunaSelecionada > 3 || this.indiceColunaSelecionada < -1) {
+    inserirLetra(event) {
+        if (this.indiceColunaAtual > 3 || this.indiceColunaAtual < -1) {
             return;
         }
         const letra = event.target.textContent;
-        this.indiceColunaSelecionada++;
-        const coluna = this.getCurrentLine().children[this.indiceColunaSelecionada];
+        this.indiceColunaAtual++;
+        const coluna = this.linhaAtual.children[this.indiceColunaAtual];
         coluna.textContent = letra;
+    }
+    setMessageLabelClass(className) {
+        this.lblMensagemFinal.classList.add(className);
     }
 }
 exports.TelaTermo = TelaTermo;

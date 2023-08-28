@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Termo = void 0;
-const avaliacao_letra_enum_js_1 = require("./avaliacao-letra.enum.js");
+const verificacao_letra_enum_js = require("./verificacao-letra-enum.js");
 const palavras = [
     "acido", "adiar", "impar", "algar", "amado", "amigo", "anexo", "anuir", "aonde", "apelo",
     "aquem", "argil", "arroz", "assar", "atras", "avido", "azeri", "babar", "bagre", "banho",
@@ -44,9 +44,10 @@ const palavras = [
 ];
 class Termo {
     constructor() {
+        this.palavraSecreta = "";
         this.tentativas = 0;
         this.mensagemFinal = "";
-        this.palavraSecreta = this.obterPalavraAleatoria();
+        this.palavraSecreta = this.obterPalavra();
     }
     avaliar(palavra) {
         if (palavra.length !== 5)
@@ -55,16 +56,16 @@ class Termo {
         const avaliacoes = new Array(palavra.length);
         for (let i = 0; i < palavra.length; i++) {
             if (palavra[i] === this.palavraSecreta[i]) {
-                avaliacoes[i] = avaliacao_letra_enum_js_1.AvaliacaoLetraEnum.Correta;
+                avaliacoes[i] = verificacao_letra_enum_js.VerificacaoDaLetraEnum.Correta;
             }
             else if (this.palavraSecreta.includes(palavra[i])) {
-                avaliacoes[i] = avaliacao_letra_enum_js_1.AvaliacaoLetraEnum.PosicaoIncorreta;
+                avaliacoes[i] = verificacao_letra_enum_js.VerificacaoDaLetraEnum.PosicaoErrada;
             }
             else {
-                avaliacoes[i] = avaliacao_letra_enum_js_1.AvaliacaoLetraEnum.NaoExistente;
+                avaliacoes[i] = verificacao_letra_enum_js.VerificacaoDaLetraEnum.NaoExiste;
             }
         }
-        if (avaliacoes.every((a) => a === avaliacao_letra_enum_js_1.AvaliacaoLetraEnum.Correta)) {
+        if (avaliacoes.every((a) => a === verificacao_letra_enum_js.VerificacaoDaLetraEnum.Correta)) {
             this.mensagemFinal = `Você acertou a palavra ${this.palavraSecreta}, parabéns!`;
         }
         else if (this.jogadorPerdeu()) {
@@ -78,7 +79,7 @@ class Termo {
     jogadorPerdeu() {
         return this.tentativas === 5;
     }
-    obterPalavraAleatoria() {
+    obterPalavra() {
         const indiceAleatorio = Math.floor(Math.random() * palavras.length);
         return palavras[indiceAleatorio].toUpperCase();
     }

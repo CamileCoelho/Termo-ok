@@ -39,9 +39,6 @@ h1 {
   font-size: 16px;
   cursor: pointer;
   padding: 2px 4px;
-  text-align: center;
-  align-self: center;
-  align-items: center;
 }
 
 .teclado {
@@ -73,18 +70,9 @@ button:hover {
 }
 
 .backspace {  
-  width: 85px; 
-  height: 40px; 
-  margin: 0px;
-  border-radius: 6px;
-  text-align: center;
-  justify-content: center;
-}
-
-.material-symbols-outlined {    
   width: 40px; 
-  height: 40px; 
-  /*height: 20px;*/ 
+  height: 32px; 
+  border-radius: 6px;
 }
 
 .reiniciar {       
@@ -102,12 +90,6 @@ button:hover {
   margin-bottom: 2%;
 }
 
-.grid-termo > .linha {
-  display: grid;
-  grid-template-columns: repeat(5, 54px);
-  gap: 7px;
-}
-
 .grid-termo > .linha > .letra {
   display: grid;
   place-items: center;
@@ -119,4 +101,52 @@ button:hover {
 
   font-size: 18px;
   font-weight: 800;
+}
+
+.grid-termo > .linha {
+  display: grid;
+  grid-template-columns: repeat(5, 54px);
+  gap: 7px;
+}
+
+.letra-selecionada {
+  border: 1px solid rgb(37, 30, 141);
+}
+
+.linha-selecionada {
+  border: 1px dashed rgb(199, 7, 7);
+}
+
+#divMensagemFinal{
+  gap: 10px;
+    display: grid;
+    place-items: center;
+}
+
+.letra-correta{
+  background-color: rgb(34, 156, 34) !important;
+}
+
+.letra-posicao-errada{
+  background-color: rgb(238, 210, 49) !important;
+}
+
+.letra-nao-existe{
+  background-color: rgb(103, 103, 103) !important;
+}
+
+.display-none{
+  display: none !important;
+}
+
+.cor-cinza{
+  background-color: #9592be !important;
+}
+
+.cor-erro{
+  color: #cf0404 !important;
+}
+
+.cor-acerto{
+  color: #03da81 !important;
 }
