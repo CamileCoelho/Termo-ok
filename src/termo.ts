@@ -77,7 +77,7 @@ export class Termo {
 
     if (avaliacoes.every((a) => a === VerificacaoDaLetraEnum.Correta)) 
     {
-      this.mensagemFinal = `Você acertou a palavra ${this.palavraSecreta}, parabéns!`;
+      this.mensagemFinal = `Você acertou a palavra ${this.palavraSecreta}. Parabéns!`;
     } 
     else if (this.jogadorPerdeu()) 
     {
